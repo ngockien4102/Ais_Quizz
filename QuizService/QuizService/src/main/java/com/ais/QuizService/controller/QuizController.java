@@ -4,6 +4,7 @@ import com.ais.QuizService.dto.Request.*;
 import com.ais.QuizService.entity.CategoryEntity;
 import com.ais.QuizService.entity.QuestionTypeEntity;
 import com.ais.QuizService.service.CategoryService;
+import com.ais.QuizService.service.NomineeService;
 import com.ais.QuizService.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ public class QuizController {
 
     @Autowired
     QuestionService questionService;
+
+    @Autowired
+    NomineeService nomineeService;
 
     //http://localhost:8080/quiz/createquestion
     @PostMapping("/createquestion")
@@ -61,6 +65,24 @@ public class QuizController {
     @PostMapping("/createquesiontype")
     public void createCategory(@RequestBody QuestionTypeRequest category) {
         questionService.createQuestionType(category);
+    }
+
+    //http://localhost:8080/quiz/createnominee
+    @PostMapping("/createnominee")
+    public void createNominee(@RequestBody NomineeRequest nomineeRequest) {
+        nomineeService.createNominee(nomineeRequest);
+    }
+
+    //http://localhost:8080/quiz/editnominee
+    @PutMapping("/editnominee")
+    public void editNominee(@RequestBody NomineeEditRequest nomineeRequest) {
+        nomineeService.editNominee(nomineeRequest);
+    }
+
+    //http://localhost:8080/quiz/deletenominee
+    @PutMapping("/deletenominee/{id}")
+    public void deleteNominee(@PathVariable("id") Long id) {
+        nomineeService.deleteNominee(id);
     }
 
 }

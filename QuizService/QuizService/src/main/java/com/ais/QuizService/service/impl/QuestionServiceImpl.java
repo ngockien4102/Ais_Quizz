@@ -3,8 +3,12 @@ package com.ais.QuizService.service.impl;
 import com.ais.QuizService.dto.Request.QuestionEditRequest;
 import com.ais.QuizService.dto.Request.QuestionRequest;
 import com.ais.QuizService.dto.Request.QuestionTypeRequest;
+import com.ais.QuizService.dto.Response.ExceptionResponse;
 import com.ais.QuizService.entity.QuestionEntity;
 import com.ais.QuizService.entity.QuestionTypeEntity;
+import com.ais.QuizService.exception.BadRequestException;
+import com.ais.QuizService.exception.DuplicateException;
+import com.ais.QuizService.exception.ErrorCode;
 import com.ais.QuizService.repository.CategoryRepository;
 import com.ais.QuizService.repository.QuestionRepository;
 import com.ais.QuizService.repository.QuestionTypeRepository;
@@ -28,10 +32,10 @@ public class QuestionServiceImpl implements QuestionService {
     QuestionTypeRepository questionTypeRepository;
 
     @Override
-    public void createQuestion(QuestionRequest request) {
+    public void createQuestion(QuestionRequest request) throws DuplicateException {
 
-        if(questionRepository.findByContent(request.getContent())!=null){
-            throw new RuntimeException("this question was crate before !!!");
+        if (questionRepository.findByContent(request.getContent()) != null) {
+            throw new DuplicateException(new ExceptionResponse(ErrorCode.DuplicateRequest));
         }
 
         QuestionEntity questionEntity = new QuestionEntity();
@@ -46,6 +50,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void editQuestion(QuestionEditRequest request) {
         QuestionEntity questionEntity = questionRepository.getById(request.getId());
+        if (questionEntity == null) {
+            throw new BadRequestException(new ExceptionResponse(ErrorCode.notFound));
+        }
         questionEntity.setContent(request.getContent());
         questionEntity.setQuestionType(request.getQuestionType());
         questionEntity.setCategory(request.getCategory());
@@ -57,13 +64,16 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionRequest> getQuestionByCategory(String name) {
         List<QuestionEntity> questionEntity = questionRepository.findByCategory_Name(name);
+        if (questionEntity == null) {
+            throw new BadRequestException(new ExceptionResponse(ErrorCode.notFound));
+        }
         List<QuestionRequest> questionRequests = new ArrayList<>();
-        for(QuestionEntity question : questionEntity){
+        for (QuestionEntity question : questionEntity) {
             QuestionRequest request = new QuestionRequest();
             request.setContent(question.getContent());
             request.setQuestionType(question.getQuestionType());
             request.setCategory(question.getCategory());
-//            request.setQuestionChoice(question.getQuestionChoice());
+            request.setQuestionChoice(question.getQuestionChoice());
             request.setQuestionTime(question.getQuestionTime());
             questionRequests.add(request);
         }
