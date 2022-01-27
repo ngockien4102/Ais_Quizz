@@ -55,7 +55,7 @@ public class QuizController {
 
     //http://localhost:8080/quiz/getquestionbycategory/category
     @GetMapping("/getquestionbycategory/{category}")
-    public List<QuestionRequest> getQuestionByCategory(@PathVariable("category") String name) {
+    public List<QuestDTO> getQuestionByCategory(@PathVariable("category") String name) {
         return quesTionService.getQuestionByCategory(name);
     }
 

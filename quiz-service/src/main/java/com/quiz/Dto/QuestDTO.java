@@ -13,8 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionRequest {
-
+public class QuestDTO {
     private String content;
 
     private QuestionType questionType;
@@ -23,5 +22,5 @@ public class QuestionRequest {
 
     private int questionTime;
 
-    private List<QuestionChoice> questionChoice;
+    private List<QuestionChoiceDTO> questionChoiceDTOs;
 }

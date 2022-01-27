@@ -33,7 +33,8 @@ public class Question {
     private Category category;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionChoice> questionChoice=new ArrayList<>();
+    private List<QuestionChoice> questionChoice;
+
     private  int questionTime;
 
 }

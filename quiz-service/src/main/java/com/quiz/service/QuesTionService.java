@@ -1,9 +1,6 @@
 package com.quiz.service;
 
-import com.quiz.Dto.CreateQuizForm;
-import com.quiz.Dto.QuestionEditRequest;
-import com.quiz.Dto.QuestionRequest;
-import com.quiz.Dto.QuestionTypeRequest;
+import com.quiz.Dto.*;
 import com.quiz.entity.Nominee;
 import com.quiz.entity.Question;
 import com.quiz.entity.QuestionChoice;
@@ -71,15 +68,24 @@ public class QuesTionService {
         questionEntity.setQuestionTime(request.getQuestionTime());
         questionRepository.save(questionEntity);
     }
-    public List<QuestionRequest> getQuestionByCategory(String name) {
+    public List<QuestDTO> getQuestionByCategory(String name) {
         List<Question> questionEntity = questionRepository.findByCategory_Name(name);
-        List<QuestionRequest> questionRequests = new ArrayList<>();
+        List<QuestDTO> questionRequests = new ArrayList<>();
+
         for(Question question : questionEntity){
-            QuestionRequest request = new QuestionRequest();
+            QuestDTO request = new QuestDTO();
             request.setContent(question.getContent());
             request.setQuestionType(question.getQuestionType());
             request.setCategory(question.getCategory());
-//            request.setQuestionChoice(question.getQuestionChoice());
+            List<QuestionChoiceDTO> questionChoiceDTOS = new ArrayList<>();
+            for(QuestionChoice questionChoice : question.getQuestionChoice()){
+                QuestionChoiceDTO questionChoiceDTO = new QuestionChoiceDTO();
+                questionChoiceDTO.setId(questionChoice.getId());
+                questionChoiceDTO.setName(questionChoice.getName());
+                questionChoiceDTO.setResult(questionChoice.isTrue());
+                questionChoiceDTOS.add(questionChoiceDTO);
+            }
+            request.setQuestionChoiceDTOs(questionChoiceDTOS);
             request.setQuestionTime(question.getQuestionTime());
             questionRequests.add(request);
         }
